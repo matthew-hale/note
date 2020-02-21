@@ -26,7 +26,7 @@ import re
 # value; the same thing happens when there are no tags of the given tag 
 # in the file dictionaries provided.
 def get_tags(tag, files):
-    if not tag in tags:
+    if not tag in _tags:
         return None
     # This clever line simply says:
     # "For each file, if the tag has content, return that tag's content"
@@ -38,7 +38,7 @@ def get_tags(tag, files):
 # Similar to get_tags, the get_files function will return a list of 
 # filenames of those files that contain the given tag.
 def get_files(tag, tag_type, files):
-    if not tag_type in tags:
+    if not tag_type in _tags:
         return None
     matches = [file["name"] for file in files if file[tag_type] == tag]
     # We don't need unique values here - in theory, the file system 
@@ -48,7 +48,7 @@ def get_files(tag, tag_type, files):
 
 # These are our note tags. 
 #
-tags = ("project", "area", "resource")
+_tags = ("project", "area", "resource")
 #
 # Tags in a note file have the following requirements to be parsed 
 # correctly:
@@ -68,9 +68,9 @@ tags = ("project", "area", "resource")
 #
 # Now we have the rules for our regular expression searches, as defined 
 # here.
-project_re = re.compile("(^project[:=])([a-zA-Z0-9 \\-_]*$)", re.I)
-area_re = re.compile("(^area[:=])([a-zA-Z0-9 \\-_]*$)", re.I)
-resource_re = re.compile("(^resource[:=])([a-zA-Z0-9 \\-_]*$)", re.I)
+_project_re = re.compile("(^project[:=])([a-zA-Z0-9 \\-_]*$)", re.I)
+_area_re = re.compile("(^area[:=])([a-zA-Z0-9 \\-_]*$)", re.I)
+_resource_re = re.compile("(^resource[:=])([a-zA-Z0-9 \\-_]*$)", re.I)
 
 
 # This grabs files of extensions "*.md" and "*.txt" in the same 
@@ -91,7 +91,7 @@ for extension in extensions:
 #
 # First, we create our empty list of file dicts:
 #
-files = []
+_files = []
 #
 # Now we can iterate through each file, creating a dictionary, 
 # populating its keys, and appending it to this list.
@@ -119,16 +119,16 @@ for file in file_names:
         for i in range(0, 4):
             content.append(f.readline())
         for line in content:
-            project = project_re.match(line)
-            area = area_re.match(line)
-            resource = resource_re.match(line)
+            project = _project_re.match(line)
+            area = _area_re.match(line)
+            resource = _resource_re.match(line)
             if project:
                 current_file["project"] = project.group(2).strip()
             if area:
                 current_file["area"] = area.group(2).strip()
             if resource:
                 current_file["resource"] = resource.group(2).strip()
-    files.append(current_file)
+    _files.append(current_file)
 
 # With all of the work done getting the formatted file data, it's time 
 # to parse user input. Everything else will depend on what parameters 
@@ -212,9 +212,9 @@ if args.subcommand_name == "list":
             # First, we need a map of each tag type, and all of the 
             # tags present in the files for each type:
             file_tags = {
-                "project": get_tags("project", files),
-                "area": get_tags("area", files),
-                "resource": get_tags("resource", files),
+                "project": get_tags("project", _files),
+                "area": get_tags("area", _files),
+                "resource": get_tags("resource", _files),
             }
             # Now we iterate through tag types, and print the tag type, 
             # the tag values of that type, and the files with each of 
@@ -226,11 +226,11 @@ if args.subcommand_name == "list":
                 print("    {}".format(tag_type))
                 for value in file_tags[tag_type]:
                     print("        {}".format(value))
-                    matching_files = get_files(value, tag_type, files)
+                    matching_files = get_files(value, tag_type, _files)
                     print("            " + "\n            ".join(matching_files))
             print("    untagged")
             filenames = []
-            for file in files:
+            for file in _files:
                 # i.e. if the file has no tags at all
                 if file["project"] == None and file["area"] == None and file["resource"] == None:
                     filenames.append(file["name"])
@@ -240,7 +240,7 @@ if args.subcommand_name == "list":
         # structure
         elif args.format == "text":
             filenames = []
-            for file in files:
+            for file in _files:
                 filenames.append(file["name"])
             sorted_filenames = sorted(set(filenames))
             print("\n".join(sorted_filenames))
@@ -248,7 +248,7 @@ if args.subcommand_name == "list":
     # way, so we group them here.
     elif target in ("project", "area", "resource"):
         output_files = []
-        matching_files = get_files(subject, target, files)
+        matching_files = get_files(subject, target, _files)
         if matching_files:
             for item in matching_files:
                 output_files.append(item)
@@ -259,4 +259,9 @@ if args.subcommand_name == "list":
             for file in output_files:
                 print(file)
     elif target == "category":
-        print("category")
+        # Category is a bit different: we don't actually want any file 
+        # names, but rather the values of the tags that fall into the 
+        # given subject category. Thus, the first thing we need to do 
+        # is validate that the subject is one of our tag types.
+        if subject not in tags:
+            print("args")
