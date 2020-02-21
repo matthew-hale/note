@@ -6,10 +6,15 @@
 #
 # PARA stands for:
 #
-# * Projects
-# * Areas (of responsibility)
-# * Resources
-# * Archive (past projects)
+# + Projects
+# + Areas (of responsibility)
+# + Resources
+# + Archive (past projects)
+#
+# More specifically, this program uses the "PAR" method, as there's 
+# currently no support for any archiving system. The simplest way to 
+# put files into an archive would be to simply move them into an 
+# archive folder, which you can search separately.
 
 import argparse
 from glob import glob
@@ -30,16 +35,18 @@ def get_tags(tag, files):
     # Finally, we sort and return our output if there is one
     return sorted(set(matches)) if matches else None
 
-# These are our note tags. Tags in a note file have the following 
-# requirements to be parsed correctly:
+# These are our note tags. 
 #
 tags = ("project", "area", "resource")
 #
-# * Notes are tagged with these tags in the first three lines of a file
-# * The tag must start at the beginning of the line
-# * The tag must have a colon or an equals sign 
-# * The tag may come after a space, or right after the tag definition
-# * There must be no whitespace at the end of the line after the tag
+# Tags in a note file have the following requirements to be parsed 
+# correctly:
+#
+# + Notes are tagged with these tags in the first three lines of a file
+# + The tag must start at the beginning of the line
+# + The tag must have a colon or an equals sign 
+# + The tag may come after a space, or right after the tag definition
+# + There must be no whitespace at the end of the line after the tag
 #
 # Examples of proper tags (ignoring the space after these comment 
 # signs; pretend that the '# ' doesn't exist):
@@ -112,4 +119,71 @@ for file in file_names:
                 current_file["resource"] = resource.group(2).strip()
     files.append(current_file)
 
-# With all of the work done getting the formatted file data, it's time to parse user input.
+# With all of the work done getting the formatted file data, it's time 
+# to parse user input. Everything else will depend on what parameters 
+# the user has defined.
+#
+# First, we'll define a simple argument parser:
+#
+parser = argparse.ArgumentParser(description = "note management tool")
+#
+# Next, we'll define a subparser object for our subcommands, giving 
+# it a destination variable of 'subcommand_name' so that we can test 
+# based on which subcommand was provided:
+#
+subparsers = parser.add_subparsers(title = "subcommands",
+                                   dest = "subcommand_name")
+#
+# To this, we'll add our subcommands, followed by any additional 
+# arguments for each one
+#
+#
+# # list
+#
+# This command is used to produce a list of files, filtered by any tags 
+# or categories that the user provides. The syntax looks like this:
+#
+#   $ note list project pythfinder
+#   $ note list area "personal development"
+#   $ note list resource "sorting algorithms"
+#   $ note list category resource
+#   $ note list all
+#
+# etc.
+#
+parser_list = subparsers.add_parser("list",
+                                    add_help = False,
+                                    help = "list notes based on tags/categiries")
+parser_list.add_argument("target",
+                         metavar = "target",
+                         choices = ["project", "area", "resource", "category", "all"],
+                         help = "type of list target",
+                         type = str)
+parser_list.add_argument("subject",
+                         metavar = "subject",
+                         help = "the specific tag/category to list",
+                         required = False,
+                         default = None,
+                         type = str)
+args = parser.parse_args()
+#
+# Now we enter the logic for parsing user arguments. First, we parse 
+# subcommand with a simple if-elif structure on the 'subcommand_name' 
+# variable; afterwards, we'll do further parsing of each subcommand's 
+# required and optional arguments.
+#
+if args.subcommand_name == "list":
+    target = args.target
+    subject = args.subject
+    #
+    # The only target that doesn't require a subject is "all"; thus, we 
+    # test that subject is present if the target is not all. If we're 
+    # missing a subject when we need one, we'll throw an error.
+    #
+    if target != "all" and subject == None:
+    #
+    if target == "project":
+    elif target == "area":
+    elif target == "resource":
+    elif target == "category":
+    elif target == "all":
