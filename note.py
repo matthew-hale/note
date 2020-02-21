@@ -17,6 +17,7 @@
 # archive folder, which you can search separately.
 
 import argparse
+import sys
 from glob import glob
 import re
 
@@ -129,6 +130,10 @@ for file in file_names:
             if resource:
                 current_file["resource"] = resource.group(2).strip()
     _files.append(current_file)
+
+# If _files is empty, we just want to silently exit.
+if not _files:
+    sys.exit()
 
 # With all of the work done getting the formatted file data, it's time 
 # to parse user input. Everything else will depend on what parameters 
