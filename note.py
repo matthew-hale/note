@@ -8,7 +8,7 @@
 #
 # * Projects
 # * Areas (of responsibility)
-# * Research topics
+# * Resources
 # * Archive (past projects)
 
 import argparse
@@ -33,7 +33,7 @@ def get_tags(tag, files):
 # These are our note tags. Tags in a note file have the following 
 # requirements to be parsed correctly:
 #
-tags = ("project", "area", "research")
+tags = ("project", "area", "resource")
 #
 # * Notes are tagged with these tags in the first three lines of a file
 # * The tag must start at the beginning of the line
@@ -46,13 +46,13 @@ tags = ("project", "area", "research")
 #
 # project=demo
 # area: life
-# research:computer hardware
+# resource:computer hardware
 #
 # Now we have the rules for our regular expression searches, as defined 
 # here.
 project_re = re.compile("(^project[:=])([a-zA-Z0-9 \\-_]*$)", re.I)
 area_re = re.compile("(^area[:=])([a-zA-Z0-9 \\-_]*$)", re.I)
-research_re = re.compile("(^research[:=])([a-zA-Z0-9 \\-_]*$)", re.I)
+resource_re = re.compile("(^resource[:=])([a-zA-Z0-9 \\-_]*$)", re.I)
 
 
 # This grabs files of extensions "*.md" and "*.txt" in the same 
@@ -84,7 +84,7 @@ for file in file_names:
         "name": file,
         "project": None,
         "area": None,
-        "research": None
+        "resource": None
     }
     # We open the file, and read the first 3 lines. Then, we iterate 
     # through the lines, pulling out the values of any matching tags we 
@@ -103,13 +103,13 @@ for file in file_names:
         for line in content:
             project = project_re.match(line)
             area = area_re.match(line)
-            research = research_re.match(line)
+            resource = resource.match(line)
             if project:
                 current_file["project"] = project.group(2).strip()
             if area:
                 current_file["area"] = area.group(2).strip()
-            if research:
-                current_file["research"] = research.group(2).strip()
+            if resource:
+                current_file["resource"] = resource.group(2).strip()
     files.append(current_file)
 
 # With all of the work done getting the formatted file data, it's time to parse user input.
