@@ -259,6 +259,8 @@ if args.subcommand_name == "list":
         if matching_files:
             for item in matching_files:
                 output_files.append(item)
+        if not output_files:
+            sys.exit()
         if args.format == "pretty":
             print("\n    {}: {}".format(target, subject))
             print("        " + "\n        ".join(output_files) + "\n")
@@ -275,6 +277,8 @@ if args.subcommand_name == "list":
         # Now it's simple: we just get all the tags of that type and 
         # print them.
         tags = get_tags(subject, _files)
+        if not tags:
+            sys.exit()
         if args.format == "pretty":
             print("\n    {}s:".format(subject))
             print("        " + "\n        ".join(tags) + "\n")
