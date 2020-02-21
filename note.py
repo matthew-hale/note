@@ -256,7 +256,7 @@ if args.subcommand_name == "list":
                 output_files.append(item)
         if args.format == "pretty":
             print("\n    {}: {}".format(target, subject))
-            print("\n    " + "\n    ".join(output_files) + "\n")
+            print("        " + "\n        ".join(output_files) + "\n")
         elif args.format == "text":
             for file in output_files:
                 print(file)
