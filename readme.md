@@ -134,6 +134,8 @@ fi
         grep. Don't rewrite the wheel, as it were.
     + If I think of any other subcommands that this should have, I'll 
     add them here.
++ Add parameter for specific directory (current behavior: note only 
+searches the current working directory)
 
 ### Why subcommand?
 You may be wondering: this script only has one subcommand, so why do 
