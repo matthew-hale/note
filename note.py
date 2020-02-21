@@ -163,12 +163,12 @@ subparsers = parser.add_subparsers(title = "subcommands",
 # etc.
 #
 parser_list = subparsers.add_parser("list",
-                                    add_help = False,
                                     help = "list notes based on tags/categiries")
+list_target_choices = ["project", "area", "resource", "category", "all"]
 parser_list.add_argument("target",
                          metavar = "target",
-                         choices = ["project", "area", "resource", "category", "all"],
-                         help = "type of list target",
+                         choices = list_target_choices,
+                         help = "type of list target; one of: " + str(list_target_choices),
                          type = str)
 parser_list.add_argument("subject",
                          metavar = "subject",
@@ -176,10 +176,12 @@ parser_list.add_argument("subject",
                          nargs = "?",
                          default = None,
                          type = str)
+list_format_choices = ["pretty", "text"]
 parser_list.add_argument("-f", "--format",
+                         metavar = "<format>",
                          dest = "format",
-                         help = "",
-                         choices = ["pretty", "text"],
+                         help = "output format; one of: " + str(list_format_choices),
+                         choices = list_format_choices ,
                          default = "pretty",
                          type = str)
 args = parser.parse_args()
@@ -263,5 +265,13 @@ if args.subcommand_name == "list":
         # names, but rather the values of the tags that fall into the 
         # given subject category. Thus, the first thing we need to do 
         # is validate that the subject is one of our tag types.
-        if subject not in tags:
-            print("args")
+        if subject not in _tags:
+            raise ValueError("list category: subject must be one of " + str(_tags))
+        # Now it's simple: we just get all the tags of that type and 
+        # print them.
+        tags = get_tags(subject, _files)
+        if args.format == "pretty":
+            print("\n    {}s:".format(subject))
+            print("        " + "\n        ".join(tags) + "\n")
+        elif args.format == "text":
+            print("\n".join(tags))
