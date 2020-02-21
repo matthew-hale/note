@@ -103,7 +103,7 @@ for file in file_names:
         for line in content:
             project = project_re.match(line)
             area = area_re.match(line)
-            resource = resource.match(line)
+            resource = resource_re.match(line)
             if project:
                 current_file["project"] = project.group(2).strip()
             if area:
