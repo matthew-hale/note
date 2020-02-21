@@ -106,7 +106,7 @@ project1.txt
 
 ### Using note in a script
 Here's a little example of a script that uses `note` to produce a list 
-of files with a given project tag, piping that list to dmenu so that 
+of files with a given project tag, piping that list to `dmenu` so that 
 the user can use `vim` (or their $EDITOR of choice) on the chosen file.
 
 ```sh
