@@ -200,7 +200,50 @@ if args.subcommand_name == "list":
     if target != "all" and subject == None:
         raise ValueError("subject is required for targets != 'all'")
     if target == "all":
-        print("all")
+        # Our pretty output for 'all' will look something like this:
+        #
+        # tag type
+        #     tag value
+        #         file names
+        #         ...
+        #     ...
+        # ...
+        if args.format == "pretty":
+            # First, we need a map of each tag type, and all of the 
+            # tags present in the files for each type:
+            file_tags = {
+                "project": get_tags("project", files),
+                "area": get_tags("area", files),
+                "resource": get_tags("resource", files),
+            }
+            # Now we iterate through tag types, and print the tag type, 
+            # the tag values of that type, and the files with each of 
+            # those values:
+            print("")
+            for tag_type in file_tags.keys():
+                if file_tags[tag_type] == None:
+                    continue
+                print("    {}".format(tag_type))
+                for value in file_tags[tag_type]:
+                    print("        {}".format(value))
+                    matching_files = get_files(value, tag_type, files)
+                    print("            " + "\n            ".join(matching_files))
+            print("    untagged")
+            filenames = []
+            for file in files:
+                # i.e. if the file has no tags at all
+                if file["project"] == None and file["area"] == None and file["resource"] == None:
+                    filenames.append(file["name"])
+            sorted_filenames = sorted(set(filenames))
+            print("        " + "\n        ".join(sorted_filenames) + "\n")
+        # Text output for 'all' is just all of the filenames; no higher 
+        # structure
+        elif args.format == "text":
+            filenames = []
+            for file in files:
+                filenames.append(file["name"])
+            sorted_filenames = sorted(set(filenames))
+            print("\n".join(sorted_filenames))
     # All of the 'project', 'area', 'resource' targets behave the same 
     # way, so we group them here.
     elif target in ("project", "area", "resource"):
