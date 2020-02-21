@@ -35,6 +35,17 @@ def get_tags(tag, files):
     # Finally, we sort and return our output if there is one
     return sorted(set(matches)) if matches else None
 
+# Similar to get_tags, the get_files function will return a list of 
+# filenames of those files that contain the given tag.
+def get_files(tag, tag_type, files):
+    if not tag_type in tags:
+        return None
+    matches = [file["name"] for file in files if file[tag_type] == tag]
+    # We don't need unique values here - in theory, the file system 
+    # should take care of that for us - but we would like the result to 
+    # be in alphabetical order.
+    return matches
+
 # These are our note tags. 
 #
 tags = ("project", "area", "resource")
@@ -162,8 +173,14 @@ parser_list.add_argument("target",
 parser_list.add_argument("subject",
                          metavar = "subject",
                          help = "the specific tag/category to list",
-                         required = False,
+                         nargs = "?",
                          default = None,
+                         type = str)
+parser_list.add_argument("-f", "--format",
+                         dest = "format",
+                         help = "",
+                         choices = ["pretty", "text"],
+                         default = "pretty",
                          type = str)
 args = parser.parse_args()
 #
@@ -181,9 +198,22 @@ if args.subcommand_name == "list":
     # missing a subject when we need one, we'll throw an error.
     #
     if target != "all" and subject == None:
-    #
-    if target == "project":
-    elif target == "area":
-    elif target == "resource":
+        raise ValueError("subject is required for targets != 'all'")
+    if target == "all":
+        print("all")
+    # All of the 'project', 'area', 'resource' targets behave the same 
+    # way, so we group them here.
+    elif target in ("project", "area", "resource"):
+        output_files = []
+        matching_files = get_files(subject, target, files)
+        if matching_files:
+            for item in matching_files:
+                output_files.append(item)
+        if args.format == "pretty":
+            print("\n    {}: {}".format(target, subject))
+            print("\n    " + "\n    ".join(output_files) + "\n")
+        elif args.format == "text":
+            for file in output_files:
+                print(file)
     elif target == "category":
-    elif target == "all":
+        print("category")
