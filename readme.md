@@ -7,8 +7,6 @@ based on tags or text search to show you relevant notes.
 + Uses the PARA system for tags and interfacing
 + Notes are plain text - markdown makes for easy rendering
 + Displays all tags hierarchically according to PARA
-+ Interacts with a git repository, allowing semi-automatic commit & 
-push to upstream
 
 ## Roadmap
 
