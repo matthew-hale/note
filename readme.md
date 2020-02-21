@@ -1,6 +1,6 @@
 # Note
 A simple tool that interacts with a notes directory, and parses notes 
-based on tags or text search to show you relevant notes.
+based on tags to show you relevant notes.
 
 ## Features
 
