@@ -136,6 +136,8 @@ fi
     add them here.
 + Add parameter for specific directory (current behavior: note only 
 searches the current working directory)
++ Allow multiple "resource" tags (current behavior: only one resource 
+tag per document)
 
 ### Why subcommand?
 You may be wondering: this script only has one subcommand, so why do 
