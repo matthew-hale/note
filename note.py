@@ -174,6 +174,8 @@ parser_list.add_argument("target",
                          metavar = "target",
                          choices = list_target_choices,
                          help = "type of list target; one of: " + str(list_target_choices),
+                         default = "all",
+                         nargs = "?",
                          type = str)
 parser_list.add_argument("subject",
                          metavar = "subject",
