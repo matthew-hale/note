@@ -69,9 +69,9 @@ _tags = ("project", "area", "resource")
 #
 # Now we have the rules for our regular expression searches, as defined 
 # here.
-_project_re = re.compile("(^project[:=])([a-zA-Z0-9 \\-_]*$)", re.I)
-_area_re = re.compile("(^area[:=])([a-zA-Z0-9 \\-_]*$)", re.I)
-_resource_re = re.compile("(^resource[:=])([a-zA-Z0-9 \\-_]*$)", re.I)
+_project_re = re.compile("(^project[:=])([a-zA-Z0-9\\. \\-_]*$)", re.I)
+_area_re = re.compile("(^area[:=])([a-zA-Z0-9\\. \\-_]*$)", re.I)
+_resource_re = re.compile("(^resource[:=])([a-zA-Z0-9\\. \\-_]*$)", re.I)
 
 
 # This grabs files of extensions "*.md" and "*.txt" in the same 
