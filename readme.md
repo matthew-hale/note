@@ -136,15 +136,10 @@ fi
     add them here.
 + ~~Add parameter for specific directory (current behavior: note only 
 searches the current working directory)~~ - complete
-+ Allow multiple "resource" tags (current behavior: only one resource 
-tag per document)
-+ Allow multiple "area" tags (current behavior: only one area tag per 
-document)
-    + These two go hand-in-hand. The only tag where it wouldn't make 
-    sense to have more than one would be a project tag, I think. 
-    Documents with project tags are intended to be specifically created 
-    or referenced for that project. If the project is completed or 
-    otherwise irrelevant, the tags can be removed from the files.
++ ~~Allow multiple "resource" tags (current behavior: only one resource 
+tag per document)~~ - complete
++ ~~Allow multiple "area" tags (current behavior: only one area tag per 
+document)~~ - complete
 
 ### Why subcommand?
 You may be wondering: this script only has one subcommand, so why do 
