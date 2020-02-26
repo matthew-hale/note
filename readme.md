@@ -137,6 +137,7 @@ fi
 + ~~Add parameter for specific directory (current behavior: note only 
 searches the current working directory)~~ - complete
 + Allow multiple "resource" tags (current behavior: only one resource 
+tag per document)
 + Allow multiple "area" tags (current behavior: only one area tag per 
 document)
     + These two go hand-in-hand. The only tag where it wouldn't make 
