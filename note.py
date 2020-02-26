@@ -17,6 +17,7 @@
 # archive folder, which you can search separately.
 
 import argparse
+import os
 import sys
 from glob import glob
 import re
@@ -74,10 +75,87 @@ _area_re = re.compile("(^area[:=])([a-zA-Z0-9\\. \\-_]*$)", re.I)
 _resource_re = re.compile("(^resource[:=])([a-zA-Z0-9\\. \\-_]*$)", re.I)
 
 
+# Now, it's time to parse user input. Everything else will depend on 
+# what parameters the user has defined.
+#
+# First, we'll define a simple argument parser:
+#
+parser = argparse.ArgumentParser(description = "note management tool")
+#
+# We'll also add any parameters which are program wide, like the 
+# directory parameter:
+#
+parser.add_argument("-d", "--directory",
+                    dest = "directory",
+                    help = "directory in which note will search",
+                    type = str)
+#
+# Next, we'll define a subparser object for our subcommands, giving 
+# it a destination variable of 'subcommand_name' so that we can test 
+# based on which subcommand was provided:
+#
+subparsers = parser.add_subparsers(title = "subcommands",
+                                   dest = "subcommand_name")
+#
+# To this, we'll add our subcommands, followed by any additional 
+# arguments for each one
+#
+#
+# # list
+#
+# This command is used to produce a list of files, filtered by any tags 
+# or categories that the user provides. The syntax looks like this:
+#
+#   $ note list project pythfinder
+#   $ note list area "personal development"
+#   $ note list resource "sorting algorithms"
+#   $ note list category resource
+#   $ note list all
+#
+# etc.
+#
+parser_list = subparsers.add_parser("list",
+                                    help = "list notes based on tags/categiries")
+list_target_choices = ["project", "area", "resource", "category", "all"]
+parser_list.add_argument("target",
+                         metavar = "target",
+                         choices = list_target_choices,
+                         help = "type of list target; one of: " + str(list_target_choices),
+                         default = "all",
+                         nargs = "?",
+                         type = str)
+parser_list.add_argument("subject",
+                         metavar = "subject",
+                         help = "the specific tag/category to list",
+                         nargs = "?",
+                         default = None,
+                         type = str)
+list_format_choices = ["pretty", "text"]
+parser_list.add_argument("-f", "--format",
+                         metavar = "<format>",
+                         dest = "format",
+                         help = "output format; one of: " + str(list_format_choices),
+                         choices = list_format_choices ,
+                         default = "pretty",
+                         type = str)
+args = parser.parse_args()
+
+# The first thing we need to determine is if the directory option was 
+# specified. If it was, we'll want to change to that directory before 
+# performing our file gathering operations.
+#
+if args.directory:
+    if os.path.isdir(args.directory):
+        os.chdir(args.directory)
+    else:
+        raise OSError(args.directory + " does not exist or is not a directory")
+#
+# With that, we can continue getting our files. First, the file names.
+#
 # This grabs files of extensions "*.md" and "*.txt" in the same 
-# directory as where the script was called. Future version of this 
-# script can add supported extensions simply by adding string globs to 
-# the extensions tuple.
+# directory as where the script was called (or the user-specified 
+# directory). Future versions of this script can add supported 
+# extensions simply by adding string globs to the extensions tuple.
 file_names = []
 extensions = ("*.md", "*.txt")
 for extension in extensions:
@@ -135,64 +213,6 @@ for file in file_names:
 if not _files:
     sys.exit()
 
-# With all of the work done getting the formatted file data, it's time 
-# to parse user input. Everything else will depend on what parameters 
-# the user has defined.
-#
-# First, we'll define a simple argument parser:
-#
-parser = argparse.ArgumentParser(description = "note management tool")
-#
-# Next, we'll define a subparser object for our subcommands, giving 
-# it a destination variable of 'subcommand_name' so that we can test 
-# based on which subcommand was provided:
-#
-subparsers = parser.add_subparsers(title = "subcommands",
-                                   dest = "subcommand_name")
-#
-# To this, we'll add our subcommands, followed by any additional 
-# arguments for each one
-#
-#
-# # list
-#
-# This command is used to produce a list of files, filtered by any tags 
-# or categories that the user provides. The syntax looks like this:
-#
-#   $ note list project pythfinder
-#   $ note list area "personal development"
-#   $ note list resource "sorting algorithms"
-#   $ note list category resource
-#   $ note list all
-#
-# etc.
-#
-parser_list = subparsers.add_parser("list",
-                                    help = "list notes based on tags/categiries")
-list_target_choices = ["project", "area", "resource", "category", "all"]
-parser_list.add_argument("target",
-                         metavar = "target",
-                         choices = list_target_choices,
-                         help = "type of list target; one of: " + str(list_target_choices),
-                         default = "all",
-                         nargs = "?",
-                         type = str)
-parser_list.add_argument("subject",
-                         metavar = "subject",
-                         help = "the specific tag/category to list",
-                         nargs = "?",
-                         default = None,
-                         type = str)
-list_format_choices = ["pretty", "text"]
-parser_list.add_argument("-f", "--format",
-                         metavar = "<format>",
-                         dest = "format",
-                         help = "output format; one of: " + str(list_format_choices),
-                         choices = list_format_choices ,
-                         default = "pretty",
-                         type = str)
-args = parser.parse_args()
-#
 # Now we enter the logic for parsing user arguments. First, we parse 
 # subcommand with a simple if-elif structure on the 'subcommand_name' 
 # variable; afterwards, we'll do further parsing of each subcommand's 
