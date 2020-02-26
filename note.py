@@ -30,10 +30,16 @@ import re
 def get_tags(tag, files):
     if not tag in _tags:
         return None
-    # This clever line simply says:
-    # "For each file, if the tag has content, return that tag's content"
-    matches = [file[tag] for file in files if file[tag] != None]
-
+    matches = []
+    for file in files:
+        # We check to see if the tag is a list or not, because the 
+        # projects tag is a single value, while the others are not.
+        if isinstance(file[tag], list):
+            for entry in file[tag]:
+                matches.append(entry)
+        else:
+            if file[tag] != None:
+                matches.append(file[tag])
     # Finally, we sort and return our output if there is one
     return sorted(set(matches)) if matches else None
 
@@ -42,11 +48,18 @@ def get_tags(tag, files):
 def get_files(tag, tag_type, files):
     if not tag_type in _tags:
         return None
-    matches = [file["name"] for file in files if file[tag_type] == tag]
+    matches = []
+    for file in files:
+        # We check to see if the tag is a list or not, because the 
+        # projects tag is a single value, while the others are not.
+        if isinstance(file[tag_type], list):
+            if tag in file[tag_type]: matches.append(file["name"])
+        else:
+            if tag == file[tag_type]: matches.append(file["name"])
     # We don't need unique values here - in theory, the file system 
     # should take care of that for us - but we would like the result to 
     # be in alphabetical order.
-    return matches
+    return sorted(set(matches))
 
 # These are our note tags. 
 #
@@ -71,8 +84,8 @@ _tags = ("project", "area", "resource")
 # Now we have the rules for our regular expression searches, as defined 
 # here.
 _project_re = re.compile("(^project[:=])([a-zA-Z0-9\\. \\-_]*$)", re.I)
-_area_re = re.compile("(^area[:=])([a-zA-Z0-9\\. \\-_]*$)", re.I)
-_resource_re = re.compile("(^resource[:=])([a-zA-Z0-9\\. \\-_]*$)", re.I)
+_area_re = re.compile("(^area[:=])([a-zA-Z0-9,\\. \\-_]*$)", re.I)
+_resource_re = re.compile("(^resource[:=])([a-zA-Z0-9,\\. \\-_]*$)", re.I)
 
 
 # Now, it's time to parse user input. Everything else will depend on 
@@ -180,8 +193,8 @@ for file in file_names:
     current_file = {
         "name": file,
         "project": None,
-        "area": None,
-        "resource": None
+        "area": [],
+        "resource": []
     }
     # We open the file, and read the first 3 lines. Then, we iterate 
     # through the lines, pulling out the values of any matching tags we 
@@ -204,9 +217,13 @@ for file in file_names:
             if project:
                 current_file["project"] = project.group(2).strip()
             if area:
-                current_file["area"] = area.group(2).strip()
+                area_values = area.group(2)
+                for area_tag in area_values.split(","):
+                    current_file["area"].append(area_tag.strip())
             if resource:
-                current_file["resource"] = resource.group(2).strip()
+                resource_values = resource.group(2)
+                for resource_tag in resource_values.split(","):
+                    current_file["resource"].append(resource_tag.strip())
     _files.append(current_file)
 
 # If _files is empty, we just want to silently exit.
@@ -261,7 +278,7 @@ if args.subcommand_name == "list":
             filenames = []
             for file in _files:
                 # i.e. if the file has no tags at all
-                if file["project"] == None and file["area"] == None and file["resource"] == None:
+                if file["project"] == None and file["area"] == [] and file["resource"] == []:
                     filenames.append(file["name"])
             sorted_filenames = sorted(set(filenames))
             print("        " + "\n        ".join(sorted_filenames) + "\n")
