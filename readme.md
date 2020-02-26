@@ -134,8 +134,8 @@ fi
         grep. Don't rewrite the wheel, as it were.
     + If I think of any other subcommands that this should have, I'll 
     add them here.
-+ Add parameter for specific directory (current behavior: note only 
-searches the current working directory)
++ ~~Add parameter for specific directory (current behavior: note only 
+searches the current working directory)~~ - complete
 + Allow multiple "resource" tags (current behavior: only one resource 
 + Allow multiple "area" tags (current behavior: only one area tag per 
 document)
