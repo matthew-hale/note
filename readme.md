@@ -1,4 +1,7 @@
 # What is Note?
+
+![A small demonstration of the syntax](pics/scrot.png?raw=true "screenshot")
+
 Note is a simple tool that interacts with a notes directory, and parses 
 notes based on tags to show you relevant notes.
 
