@@ -1,6 +1,6 @@
-# Note
-A simple tool that interacts with a notes directory, and parses notes 
-based on tags to show you relevant notes.
+# What is Note?
+Note is a simple tool that interacts with a notes directory, and parses 
+notes based on tags to show you relevant notes.
 
 ## Features
 
