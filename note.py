@@ -34,6 +34,12 @@ def get_file_by_id(string):
             return f
     return None
 
+def get_file_by_name(string):
+    for f in _files:
+        if f["name"] == string:
+            return f
+    return None
+
 # Arguments will use subcommands.
 parser = argparse.ArgumentParser(description = "note management tool")
 parser.add_argument("-d", "--directory",
