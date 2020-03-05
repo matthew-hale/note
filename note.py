@@ -70,6 +70,14 @@ parser_tree.add_argument("target",
                          default = "all",
                          help = "target ID, or all")
 
+parser_edit = subparsers.add_parser("edit",
+                                    help = "edit file by id")
+parser_edit.add_argument("target",
+                         metavar = "<target>",
+                         nargs = '+',
+                         type = str,
+                         help = "target ID")
+
 args = parser.parse_args()
 
 # Need to parse directory first
