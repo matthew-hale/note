@@ -194,3 +194,5 @@ elif args.subcommand_name == "get":
     if args.format == "text":
         for target in targets:
             print(target["name"])
+    elif args.format == "json":
+        print(json.dumps(targets, indent=4))
