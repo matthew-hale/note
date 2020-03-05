@@ -124,12 +124,13 @@ for name in file_names:
 if not _files:
     sys.exit()
 
+_files.sort(key=lambda x: x["id"])
+
 # Argument parsing
 #
 # List will display files based on IDs and ID references
 if args.subcommand_name == "list":
     if args.format == "text":
-        _files.sort(key=lambda x: x["id"])
         for f in _files:
             id_length = len(f["id"])
             left_length = 24-id_length
@@ -141,3 +142,30 @@ if args.subcommand_name == "list":
                 # Again, tabs (3 this time)
                 outstring += "			references: " + ", ".join(f["references"])
             print(outstring)
+# Tree will display a tree of files based on ID
+#
+# The tree shows:
+#
+# + the root file
+# + the root file's descendants
+# + each of these files' immediate cross references (if applicable)
+elif args.subcommand_name == "tree":
+    if args.format == "text":
+        if args.target != "all":
+            tree_list = []
+            # First get a list of files which are children of our root 
+            # file
+            for f in _files:
+                result = re.match(args.target, f["id"])
+                if result:
+                    tree_list.append(f)
+            # For each file in our list, we want to do the following:
+            #
+            # + print the id and the name
+            # + indented, print the ids and names of its references
+            for f in tree_list:
+                print("{}			{}".format(f["id"], f["name"]))
+                for r in f["references"]:
+                    ref = get_file_by_id(r)
+                    if ref:
+                        print("	{}		{}".format(ref["id"], ref["name"]))
