@@ -27,6 +27,13 @@ def get_ids(string):
         result.append(value)
     return result
 
+# Given an id, return the file from _files (if it exists)
+def get_file_by_id(string):
+    for f in _files:
+        if f["id"] == string:
+            return f
+    return None
+
 # Arguments will use subcommands.
 parser = argparse.ArgumentParser(description = "note management tool")
 parser.add_argument("-d", "--directory",
