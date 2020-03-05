@@ -9,6 +9,7 @@ import os
 import sys
 from glob import glob
 import re
+import json
 
 # Our "id" tag regex
 _id_re = re.compile("(id[:=] ?[a-zA-Z0-9]+)", re.I)
@@ -150,6 +151,8 @@ if args.subcommand_name == "list":
                 # Again, tabs (3 this time)
                 outstring += "			references: " + ", ".join(f["references"])
             print(outstring)
+    elif args.format == "json":
+        print(json.dumps(_files, indent=4))
 #
 # Tree will display a tree of files based on ID
 #
