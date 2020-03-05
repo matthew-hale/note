@@ -46,7 +46,7 @@ parser.add_argument("-d", "--directory",
                     dest = "directory",
                     help = "directory in which note will search",
                     type = str)
-format_choices = ["text"]
+format_choices = ["text", "json"]
 parser.add_argument("-f", "--format",
                     metavar = "<format>",
                     dest = "format",
