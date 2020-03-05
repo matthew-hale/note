@@ -163,9 +163,11 @@ elif args.subcommand_name == "tree":
             #
             # + print the id and the name
             # + indented, print the ids and names of its references
-            for f in tree_list:
-                print("{}			{}".format(f["id"], f["name"]))
-                for r in f["references"]:
-                    ref = get_file_by_id(r)
-                    if ref:
-                        print("	{}		{}".format(ref["id"], ref["name"]))
+        else:
+            tree_list = _files.copy()
+        for f in tree_list:
+            print("{}			{}".format(f["id"], f["name"]))
+            for r in f["references"]:
+                ref = get_file_by_id(r)
+                if ref:
+                    print("	{}		{}".format(ref["id"], ref["name"]))
