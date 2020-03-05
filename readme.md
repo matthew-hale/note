@@ -33,14 +33,7 @@ $ note list
 
 ## Roadmap
 
-+ Implement ID parsing for both the file and cross references
-
-### Why subcommand?
-You may be wondering: this script only has one subcommand, so why do 
-that at all? Why not just take positional parameters without the "list" 
-subcommand?
-
-The answer is mostly because I'd hate to have to refactor it to fit 
-into a subcommand architecture later if I wanted to; plus, originally I 
-had this idea that there would be multiple subcommands ready to go, but 
-the only useful one I came up with was what you see in "list".
++ ~~ID parsing for both the file and cross references~~
++ ~~Tree subcommand~~
++ Edit subcommand for edit-by-id functionality
++ Synopsis output - First X lines (for both list and tree)
