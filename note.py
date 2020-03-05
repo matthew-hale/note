@@ -70,13 +70,13 @@ parser_tree.add_argument("target",
                          default = "all",
                          help = "target ID, or all")
 
-parser_edit = subparsers.add_parser("edit",
-                                    help = "edit file by id")
-parser_edit.add_argument("target",
-                         metavar = "<target>",
-                         nargs = '+',
-                         type = str,
-                         help = "target ID")
+parser_get = subparsers.add_parser("get",
+                                   help = "get filename(s) by id")
+parser_get.add_argument("target",
+                        metavar = "<target>",
+                        nargs = '+',
+                        type = str,
+                        help = "target ID(s)")
 
 args = parser.parse_args()
 
@@ -150,6 +150,7 @@ if args.subcommand_name == "list":
                 # Again, tabs (3 this time)
                 outstring += "			references: " + ", ".join(f["references"])
             print(outstring)
+#
 # Tree will display a tree of files based on ID
 #
 # The tree shows:
@@ -179,3 +180,14 @@ elif args.subcommand_name == "tree":
                 ref = get_file_by_id(r)
                 if ref:
                     print("	{}			{}".format(ref["id"], ref["name"]))
+#
+# Returns file(s) by id; simple
+elif args.subcommand_name == "get":
+    targets = []
+    for target in args.target:
+        f = get_file_by_id(target)
+        if f:
+            targets.append(f)
+    if args.format == "text":
+        for target in targets:
+            print(target["name"])
