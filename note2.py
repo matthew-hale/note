@@ -85,13 +85,36 @@ for name in file_names:
         first_line = f.readline()
         current_file["id"] = get_ids(first_line)
         if current_file["id"]:
+            current_file["id"] = current_file["id"][0]
             for line in f:
                 references = get_ids(line)
                 for reference in references:
                     current_file["references"].append(reference)
             # Dedup
             current_file["references"] = list(set(current_file["references"]))
+        else:
+            current_file["id"] = "(none)"
 
     _files.append(current_file)
 
-print(str(_files))
+# If we have no files, we want to silently exit
+if not _files:
+    sys.exit()
+
+# Argument parsing
+#
+# List will display files based on IDs and ID references
+if args.subcommand_name == "list":
+    if args.format == "pretty":
+        _files.sort(key=lambda x: x["id"])
+        for f in _files:
+            id_length = len(f["id"])
+            left_length = 24-id_length
+            outstring = "{}".format(f["id"])
+            # Four tab caracters here:
+            outstring += "				"
+            outstring += f["name"]
+            if f["references"]:
+                # Again, tabs (3 this time)
+                outstring += "			references: " + ", ".join(f["references"])
+            print(outstring)
