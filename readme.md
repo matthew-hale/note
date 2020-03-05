@@ -34,6 +34,7 @@ $ note list
 ## Roadmap
 
 + ~~ID parsing for both the file and cross references~~
-+ ~~Tree subcommand~~
-+ Edit subcommand for edit-by-id functionality
++ ~~`tree` subcommand~~
++ `get` subcommand
 + Synopsis output - First X lines (for both list and tree)
++ JSON output format
