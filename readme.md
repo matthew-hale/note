@@ -35,6 +35,6 @@ $ note list
 
 + ~~ID parsing for both the file and cross references~~
 + ~~`tree` subcommand~~
-+ `get` subcommand
++ ~~`get` subcommand~~
 + Synopsis output - First X lines (for both list and tree)
 + JSON output format
