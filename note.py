@@ -62,7 +62,7 @@ parser_list = subparsers.add_parser("list",
                                     help = "list notes based on tags/categiries")
 
 parser_tree = subparsers.add_parser("tree",
-                                    help = "show a tree of notes")
+                                    help = "show a tree of notes (non-recursive, 1 layer deep)")
 parser_tree.add_argument("target",
                          metavar = "<target>",
                          nargs = '?',
@@ -166,8 +166,8 @@ elif args.subcommand_name == "tree":
         else:
             tree_list = _files.copy()
         for f in tree_list:
-            print("{}			{}".format(f["id"], f["name"]))
+            print("{}				{}".format(f["id"], f["name"]))
             for r in f["references"]:
                 ref = get_file_by_id(r)
                 if ref:
-                    print("	{}		{}".format(ref["id"], ref["name"]))
+                    print("	{}			{}".format(ref["id"], ref["name"]))
