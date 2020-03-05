@@ -39,13 +39,13 @@ subparsers = parser.add_subparsers(title = "subcommands",
 
 parser_list = subparsers.add_parser("list",
                                     help = "list notes based on tags/categiries")
-list_format_choices = ["pretty", "text"]
+list_format_choices = ["text"]
 parser_list.add_argument("-f", "--format",
                          metavar = "<format>",
                          dest = "format",
                          help = "output format; one of: " + str(list_format_choices),
                          choices = list_format_choices ,
-                         default = "pretty",
+                         default = "text",
                          type = str)
 args = parser.parse_args()
 
@@ -105,7 +105,7 @@ if not _files:
 #
 # List will display files based on IDs and ID references
 if args.subcommand_name == "list":
-    if args.format == "pretty":
+    if args.format == "text":
         _files.sort(key=lambda x: x["id"])
         for f in _files:
             id_length = len(f["id"])
