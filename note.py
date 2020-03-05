@@ -46,20 +46,30 @@ parser.add_argument("-d", "--directory",
                     dest = "directory",
                     help = "directory in which note will search",
                     type = str)
+format_choices = ["text"]
+parser.add_argument("-f", "--format",
+                    metavar = "<format>",
+                    dest = "format",
+                    help = "output format; one of: " + str(format_choices),
+                    choices = format_choices ,
+                    default = "text",
+                    type = str)
 
 subparsers = parser.add_subparsers(title = "subcommands",
                                    dest = "subcommand_name")
 
 parser_list = subparsers.add_parser("list",
                                     help = "list notes based on tags/categiries")
-list_format_choices = ["text"]
-parser_list.add_argument("-f", "--format",
-                         metavar = "<format>",
-                         dest = "format",
-                         help = "output format; one of: " + str(list_format_choices),
-                         choices = list_format_choices ,
-                         default = "text",
-                         type = str)
+
+parser_tree = subparsers.add_parser("tree",
+                                    help = "show a tree of notes")
+parser_tree.add_argument("target",
+                         metavar = "<target>",
+                         nargs = '?',
+                         type = str,
+                         default = "all",
+                         help = "target ID, or all")
+
 args = parser.parse_args()
 
 # Need to parse directory first
