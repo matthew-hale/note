@@ -37,4 +37,4 @@ $ note list
 + ~~`tree` subcommand~~
 + ~~`get` subcommand~~
 + Synopsis output - First X lines (for both list and tree)
-+ JSON output format
++ ~~JSON output format~~
