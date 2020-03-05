@@ -1,5 +1,2 @@
-project: note
-area: personal development, programming
-resource: notetaking, other
-
-This is a demo note, for showing the tagging system.
+id: 1
+This is a demo note, for showing the tagging and reference (id: 2) system.
