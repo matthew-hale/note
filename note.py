@@ -162,23 +162,41 @@ if args.subcommand_name == "list":
 # + the root file's descendants and cross references
 elif args.subcommand_name == "tree":
     if args.format == "text":
-        tree_list = []
+        root_file = get_file_by_id(args.target)
         # First get a list of files which are children of our root 
         # file
+        descendants = []
+        for r in root_file["references"]:
+            f = get_file_by_id(r)
+            descendants.append(f)
+        # Next, get a list of files which link to our root file
+        linkers = []
         for f in _files:
-            result = re.match(args.target, f["id"])
-            if result:
-                tree_list.append(f)
-        # For each file in our list, we want to do the following:
+            if root_file["id"] in f["references"]:
+                linkers.append(f)
+        # Our output should look like this:
         #
-        # + print the id and the name
-        # + indented, print the ids and names of its references
-        for f in tree_list:
-            print("{}				{}".format(f["id"], f["name"]))
-            for r in f["references"]:
-                ref = get_file_by_id(r)
-                if ref:
-                    print("	{}			{}".format(ref["id"], ref["name"]))
+        # linker 1        root_file        descendant 1
+        # linker 2                         descendant 2
+        #                                  descendant 3
+        # ...with our root file in the middle column, our linkers on 
+        # the left, and our descendants on the right.
+        loop_length = max(len(descendants), len(linkers))
+        for i in range(0, loop_length):
+            if len(descendants) > i:
+                desc_string = "{}: {}".format(descendants[i]["id"], descendants[i]["name"])
+            else:
+                desc_string = "	"
+            if len(linkers) > i:
+                link_string = "{}: {}".format(linkers[i]["id"], linkers[i]["name"])
+            else:
+                link_string = "	"
+            if i == 0:
+                root_string = "{}: {}".format(root_file["id"], root_file["name"])
+            else:
+                root_string = "	"
+            print("{}			{}			{}".format(link_string, root_string, desc_string))
+
 #
 # Returns file(s) by id; simple
 elif args.subcommand_name == "get":
