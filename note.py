@@ -66,9 +66,7 @@ parser_tree = subparsers.add_parser("tree",
                                     help = "show a tree of notes (non-recursive, 1 layer deep)")
 parser_tree.add_argument("target",
                          metavar = "<target>",
-                         nargs = '?',
                          type = str,
-                         default = "all",
                          help = "target ID, or all")
 
 parser_get = subparsers.add_parser("get",
@@ -160,24 +158,21 @@ if args.subcommand_name == "list":
 # The tree shows:
 #
 # + the root file
-# + the root file's descendants
-# + each of these files' immediate cross references (if applicable)
+# + the root file's linkers (files that link to it), if applicable
+# + the root file's descendants and cross references
 elif args.subcommand_name == "tree":
     if args.format == "text":
-        if args.target != "all":
-            tree_list = []
-            # First get a list of files which are children of our root 
-            # file
-            for f in _files:
-                result = re.match(args.target, f["id"])
-                if result:
-                    tree_list.append(f)
-            # For each file in our list, we want to do the following:
-            #
-            # + print the id and the name
-            # + indented, print the ids and names of its references
-        else:
-            tree_list = _files.copy()
+        tree_list = []
+        # First get a list of files which are children of our root 
+        # file
+        for f in _files:
+            result = re.match(args.target, f["id"])
+            if result:
+                tree_list.append(f)
+        # For each file in our list, we want to do the following:
+        #
+        # + print the id and the name
+        # + indented, print the ids and names of its references
         for f in tree_list:
             print("{}				{}".format(f["id"], f["name"]))
             for r in f["references"]:
