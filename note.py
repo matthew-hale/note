@@ -121,7 +121,7 @@ for name in file_names:
                 for reference in references:
                     current_file["references"].append(reference)
             # Dedup
-            current_file["references"] = list(set(current_file["references"]))
+            current_file["references"] = sorted(list(set(current_file["references"])))
         else:
             current_file["id"] = "(none)"
 
