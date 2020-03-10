@@ -5,6 +5,7 @@
 # A simple program to use a directory of plaintext files as a slip-box
 
 import argparse
+import random
 import os
 import sys
 from glob import glob
@@ -76,6 +77,9 @@ parser_get.add_argument("target",
                         nargs = '+',
                         type = str,
                         help = "target ID(s)")
+
+parser_random = subparsers.add_parser("random",
+                                      help = "return a random note")
 
 args = parser.parse_args()
 
@@ -196,7 +200,6 @@ elif args.subcommand_name == "tree":
             else:
                 root_string = "	"
             print("{}			{}			{}".format(link_string, root_string, desc_string))
-
 #
 # Returns file(s) by id; simple
 elif args.subcommand_name == "get":
@@ -210,3 +213,11 @@ elif args.subcommand_name == "get":
             print(target["name"])
     elif args.format == "json":
         print(json.dumps(targets, indent=4))
+#
+# Returns a random note file
+elif args.subcommand_name == "random":
+    random_id = random.randint(0, len(_files)-1)
+    if args.format == "text":
+        print("{}".format(_files[random_id]["name"]))
+    elif args.format == "json":
+        print(json.dumps(_files[random_id]))
