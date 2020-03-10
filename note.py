@@ -133,6 +133,7 @@ for name in file_names:
 if not _files:
     sys.exit()
 
+# Sort files by id (makes everything else easier)
 _files.sort(key=lambda x: x["id"])
 
 # Argument parsing
